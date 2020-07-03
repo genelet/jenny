@@ -1,5 +1,4 @@
 composer.lock
 vendor
 logs
-conf/vrdb_60days_daily.csv
-conf/vrdb_full_monthly.csv
+conf

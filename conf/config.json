@@ -1,14 +1,14 @@
 {
-	"Document_root" : "/home/user/tabilet/jenny/www",
+	"Document_root" : "/home/peter/jenny/www",
 	"Project" : "Jenny",
-	"Server_url" : "http://jenny.tabilet.com",
-	"Script" : "/app.php",
+	"Server_url" : "https://www.tabilet.com",
+	"Script" : "/jenny/app.php",
 	"Pubrole" : "p",
-	"Template" : "/home/user/tabilet/jenny/views",
-	"Uploaddir" : "/home/user/tabilet/jenny/www/upload",
+	"Template" : "/home/peter/jenny/views",
+	"Uploaddir" : "/home/peter/jenny/www/upload",
 	"Secret" : "970bd5aa3a3f53c1d29b8e19fa0212d6f913cbe55851e5c001b04f3d843f166fabbe18e9948d5194431f63f04b62ac579170",
 	"Db" : ["mysql:host=localhost;dbname=jenny", "jenny", "75ba0f1dd4"],
-	"Log" : {"Filename": "/home/user/tabilet/jenny/logs/debug.log", "Level": "info"},
+	"Log" : {"Filename": "/home/peter/jenny/logs/debug.log", "Level": "info"},
 	"Chartags" : {
 		"html":{"Content_type":"text/html; charset='UTF-8'"},
 		"json" : {
@@ -23,18 +23,18 @@
 			"Attributes" : ["a_id", "email", "a_firstname", "a_lastname"],
 			"Type_id" : 125,
 			"Surface" : "ta",
-			"Domain"  : "jenny.tabilet.com",
+			"Domain"  : "www.tabilet.com",
 			"Duration": 86400,
 			"Max_age" : 86400,
 			"Secret"  : "f6839918273c1f64fd8cd3e906d9a174856b1660d6402272fa65addb3bcb52d33710a2baa348f6f32d999fcd8ce712f7d57b",
 			"Coding"  : "ca3cbe14a68042bbc4e6260a1c5277ca11ffee0935b92ffc571a5e27f1aeb335f5663d2e9c1e184be83414a09baa1d156c79",
-			"Logout"  : "/",
+			"Logout"  : "/jenny/",
 			"Issuers" : {
 				"db" : {
 					"Default" : true,
 					"Screen"  : 1,
 					"Credential" : ["email", "passwd", "direct", "ta"],
-					"Sql": "",
+					"Sql": "proc_jenny_a",
 					"In_pars" : ["email", "passwd"],
 					"Out_pars": ["a_id", "email", "a_firstname", "a_lastname"]
 				}

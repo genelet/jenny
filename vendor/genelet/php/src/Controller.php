@@ -21,7 +21,7 @@ class Controller extends Config
     public function Run(): Response
     {
         // self::cross_domain();
-        if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
+        if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
             return new Response(200);
         }
 		$logger = $this->logger;
@@ -37,8 +37,6 @@ $logger->info($err);
 			return new Response($err->error_code);
 		 }
 $logger->info("role=>" . $role_name);
-$logger->info($_REQUEST);
-$logger->info($_SERVER);
 $logger->info("tag=>" . $tag_name);
 $logger->info("comp=>" . $comp_name);
 $logger->info("action=>" . $action);
@@ -84,7 +82,7 @@ $logger->info("component or action not found.");
         : '\\' . $this->project . '\\' . ucfirst($comp_name) . '\\Filter';
         $filter = new $filter_name($this->components[$comp_name], $action, $comp_name, $c, $role_name, $tag_name);
 
-		if (!empty($url_key) && $cache_type===0) { // GET request with 4 in url
+		if (!empty($url_key) && $cache_type==0) { // GET request with 4 in url
 $logger->info("ID from URL.");
 			$_REQUEST[$filter->current_key] = $url_key;
 		}
@@ -93,7 +91,13 @@ $logger->info("ID from URL.");
         if (!$filter->Is_public()) {
 $logger->info("check authentication for not public role.");
 			$surface = $filter->roles[$role_name]->surface;
-            $err = empty($_REQUEST[$surface]) ? $filter->Verify_cookie() : $filter->Verify_cookie($_REQUEST[$surface]);
+            if (empty($_REQUEST[$surface])) {
+				$err = $filter->Verify_cookie();
+			} else {
+				$err = $filter->Verify_cookie($_REQUEST[$surface]);
+				unset($_REQUEST[$surface]);
+				unset($OLD[$surface]);
+			}
             if ($err != null) {
 $logger->info("ticket check failed.");
         		if ($is_json) {
@@ -126,9 +130,9 @@ $logger->info("acl failed.");
 $logger->info("caching needed.");
 			if ($cache->has($url_key)) {
 				return $response->with_cached();
-			 } elseif ($cache_type===1) { // GET id request
+			 } elseif ($cache_type==1) { // GET id request
 				$_REQUEST[$filter->current_key] = $url_key;
-			 } elseif ($cache_type===2 && !empty($url_key)) {
+			 } elseif ($cache_type==2 && !empty($url_key)) {
 				$queries = unserialize(base64_decode(str_replace(['-','_'], ['+','/'], $url_key)));
 				foreach ($queries as $k => $v) { $_REQUEST[$k] = $v; }
 			}
@@ -176,13 +180,13 @@ $logger->info("end page, and sending to browser.");
     private static function cross_domain() : void
     {
         foreach ($_SERVER as $name => $value) {
-            if ($name === "ORIGIN") {
+            if ($name == "ORIGIN") {
                 header("Access-Control-Allow-Origin: $value");
                 header("Access-Control-Max-Age: 1728000");
                 header("Access-Control-Allow-Credentials: true");
-            } elseif ($name === "Access-Control-Request-Method") {
+            } elseif ($name == "Access-Control-Request-Method") {
                 header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
-            } elseif ($name === "Access-Control-Request-Headers") {
+            } elseif ($name == "Access-Control-Request-Headers") {
                 header("Access-Control-Allow-Headers: $value");
             }
         }
@@ -202,12 +206,12 @@ $logger->info("end page, and sending to browser.");
         if (!empty($items)) {
             $header_found = true;
             foreach ($items as $item) {
-                if ($item === "application/x-www-form-urlencoded" || $item === "multipart/form-data") {return;}
+                if ($item == "application/x-www-form-urlencoded" || $item == "multipart/form-data") {return;}
                 if (strpos($item, 'json') !== false) {$json_found = true;
                     break;}
             }
         }
-        if ($json_found || $header_found === false) {
+        if ($json_found || $header_found == false) {
             $content = file_get_contents('php://input');
             if (!empty($content)) {
                 foreach (json_decode($content, true) as $k => $v) {
@@ -239,7 +243,7 @@ $logger->info("end page, and sending to browser.");
         }
 
         $arr = explode('.', $path_info[2]);
-        if (sizeof($arr)===2) {
+        if (sizeof($arr)==2) {
             $role_name = $path_info[0];
             $comp_name = $path_info[1];
             $tag_name = $arr[1];
@@ -251,7 +255,7 @@ $logger->info("end page, and sending to browser.");
             } else {
 				$cache_type = 2;
                 $patterns = explode('_', $arr[0], 2);
-                if (sizeof($patterns)===2) {
+                if (sizeof($patterns)==2) {
 					$action = $patterns[0];
                     $url_key = $patterns[1];
                 }
@@ -263,7 +267,7 @@ $logger->info("end page, and sending to browser.");
         $tag_name = $path_info[1];
         $comp_name = $path_info[2];
         if ($this->Is_json_tag($tag_name)) {
-                if ($_SERVER["REQUEST_METHOD"] === "POST") {$this->body_json();}
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {$this->body_json();}
         }
         $action = isset($_REQUEST[$this->action_name])
         ? $_REQUEST[$this->action_name]
@@ -302,10 +306,11 @@ $logger->info("end page, and sending to browser.");
 			$err = ($is_json) ? $ticket->Basic() : $ticket->Handler();
 		}
 $this->logger->info("ticket returns:");
-$this->logger->info($err);
 		if ($err !== null && $err->error_code==303) {
+$this->logger->info($err);
 			return $response->with_redirect($ticket->Uri);
 		} elseif ($err !== null) {
+$this->logger->info($err);
 			if ($is_json) {
 				header("Tabilet-Error: ". $err->error_code);
 				header("Tabilet-Error-Description: ".$err->error_string);
@@ -327,6 +332,7 @@ $this->logger->info("set up cookie.");
 		if ($is_json) {
 			return $response->with_results(["token_type"=>"bearer", "access_token"=>$signed, "expires_in"=>$role->duration]);
 		}
+$this->logger->info("redirect: " . $ticket->Uri);
 		return $response->with_redirect($ticket->Uri);
 	}
 

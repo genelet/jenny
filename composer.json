@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "genelet/php": "^1.2.5"
+        "genelet/php": "^1.2.8"
     },
     "autoload": {
         "psr-4" : {

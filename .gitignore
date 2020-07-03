@@ -4,7 +4,6 @@ logs
 conf/reload.pl
 conf/config.json
 conf/load.pl
-sample_config.json
 conf/vrdb_60days_daily.csv
 conf/vrdb_full_monthly.csv
 

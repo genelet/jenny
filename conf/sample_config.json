@@ -1,0 +1,44 @@
+{
+	"Document_root" : "/home/peter/jenny/www",
+	"Project" : "Jenny",
+	"Server_url" : "https://www.tabilet.com",
+	"Script" : "/jenny/app.php",
+	"Pubrole" : "p",
+	"Template" : "/home/peter/jenny/views",
+	"Uploaddir" : "/home/peter/jenny/www/upload",
+	"Secret" : "128_LONG_RANDOM_HEX_STRING",
+	"Db" : ["mysql:host=localhost;dbname=jenny", "user", "pass"],
+	"Log" : {"Filename": "/home/peter/jenny/logs/debug.log", "Level": "info"},
+	"Chartags" : {
+		"html":{"Content_type":"text/html; charset='UTF-8'"},
+		"json" : {
+			"Content_type":"application/json; charset='UTF-8'",
+			"Case":1
+		}
+	},
+	"Roles" : {
+		"a" : {
+			"Is_admin" : true,
+			"Id_name" : "a_id",
+			"Attributes" : ["a_id", "email", "a_firstname", "a_lastname"],
+			"Type_id" : 125,
+			"Surface" : "ta",
+			"Domain"  : "www.tabilet.com",
+			"Duration": 86400,
+			"Max_age" : 86400,
+			"Secret"  : "128_LONG_RANDOM_HEX_STRING",
+			"Coding"  : "128_LONG_RANDOM_HEX_STRING",
+			"Logout"  : "/jenny/",
+			"Issuers" : {
+				"db" : {
+					"Default" : true,
+					"Screen"  : 1,
+					"Credential" : ["email", "passwd", "direct", "ta"],
+					"Sql": "proc_jenny_a",
+					"In_pars" : ["email", "passwd"],
+					"Out_pars": ["a_id", "email", "a_firstname", "a_lastname"]
+				}
+			}
+		}
+	}
+}
